@@ -1,0 +1,4 @@
+on load:
+    set {TIEMPO_ESPERA_JUGADOR_NUEVO_SEGUNDOS} to 0 #setear a 0 para ignorar la condicion
+    set {TIEMPO_JUEGO_SEMANAL_MINUTOS} to 360
+    set {AVISO_TIEMPO_SEMANAL_RESTANTE} to 5

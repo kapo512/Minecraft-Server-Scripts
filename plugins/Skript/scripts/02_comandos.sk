@@ -1,0 +1,117 @@
+command /tiempojugado:
+    trigger:
+        set {_minutos} to {tiempo::%uuid of player%}
+        if {_minutos} is not set:
+            set {_minutos} to 0
+
+        set {_horas} to floor({_minutos} / 60)
+        set {_minutos} to mod({_minutos}, 60)
+
+        send "&6⏱ Tiempo jugado hoy: &e%{_horas}%h %{_minutos}%m 0s" to player
+
+#command /settiempo <player> <number>:
+#    trigger:
+#        set {tiempo::%uuid of arg-1%} to arg-2
+#        send "&aTiempo de juego de %arg-1% establecido en &e%arg-2% minutos&a." to player
+#        send "&eTu tiempo de juego fue cambiado a %arg-2% minutos." to arg-1
+
+command /reseteartiempo:
+    permission: admin.reseteo
+    trigger:
+        delete {tiempo::*}
+        delete {avisado::*}
+        send "&a✔ Tiempo de todos los jugadores reseteado con éxito." to executor
+        send "[DEBUG] Datos diarios reseteados al iniciar el script." to console
+
+command /clean:
+    trigger:
+        loop 100 times:
+            send "" to player
+
+command /agregarposicionactual <text>:
+    trigger:
+        set {_worldname} to name of world of player
+        if {_worldname} is "world":
+            set {_mundo} to "Overworld"
+        else if {_worldname} is "world_nether":
+            set {_mundo} to "Nether"
+        else if {_worldname} is "world_the_end":
+            set {_mundo} to "End"
+        else:
+            send "&cNo se pudo identificar el mundo del jugador."
+            stop
+
+        set {_nombre} to arg 1
+        set {_x} to x-coordinate of player
+        set {_y} to y-coordinate of player
+        set {_z} to z-coordinate of player
+
+        set {lugares::%{_nombre}%::x} to {_x}
+        set {lugares::%{_nombre}%::y} to {_y}
+        set {lugares::%{_nombre}%::z} to {_z}
+        set {lugares::%{_nombre}%::mundo} to {_mundo}
+
+        if {lugares_lista::*} does not contain arg-1:
+            add arg-1 to {lugares_lista::*}
+    
+        send "&aLugar '&e%{_nombre}%&a' guardado en &fX: %{_x}%, Y: %{_y}%, Z: %{_z}% &7en el mundo &f%{_mundo}%&a."
+
+command /agregarlugar <text> <number> <number> <number> [<text>]:
+    trigger:
+        if arg-5 is set:
+            set {_mundo} to arg-5
+            if {_mundo} is not "Overworld":
+                if {_mundo} is not "Nether":
+                    if {_mundo} is not "End":
+                        send "&cEse mundo no es válido. Usa solo &eOverworld&c, &eNether&c o &eEnd&c."
+                        stop
+        else:
+            set {_worldname} to name of world of player
+            if {_worldname} is "world":
+                set {_mundo} to "Overworld"
+            else if {_worldname} is "world_nether":
+                set {_mundo} to "Nether"
+            else if {_worldname} is "world_the_end":
+                set {_mundo} to "End"
+            else:
+                send "&cNo se pudo identificar el mundo del jugador."
+                stop
+        set {lugares::%arg-1%::x} to arg-2
+        set {lugares::%arg-1%::y} to arg-3
+        set {lugares::%arg-1%::z} to arg-4
+        set {lugares::%arg-1%::mundo} to {_mundo}
+
+        # Solo agregamos a la lista si no está ya
+        if {lugares_lista::*} does not contain arg-1:
+            add arg-1 to {lugares_lista::*}
+
+        send "&aLugar '&e%arg-1%&a' guardado con éxito."
+    #    send "&aLugar '&e%argument 1%&a' guardado en las coordenadas &eX:%arg-2% Y:%arg-3% Z:%arg-4%&a."
+
+command /lugares:
+    trigger:
+        send "&6=== Lugares Guardados ==="
+        loop {lugares_lista::*}:
+            set {_nombre} to loop-value
+            set {_x} to {lugares::%{_nombre}%::x}
+            set {_y} to {lugares::%{_nombre}%::y}
+            set {_z} to {lugares::%{_nombre}%::z}
+            set {_mundo} to {lugares::%{_nombre}%::mundo}
+            send " &e%{_nombre}% &7-> &fX:%{_x}%, Y:%{_y}%, Z:%{_z}%, Mundo: %{_mundo}%"
+
+command /borrarlugar <text>:
+    trigger:
+        if {lugares::%arg 1%::*} is set:
+            delete {lugares::%arg 1%}
+            remove arg-1 from {lugares_lista::*}
+            send "&cLugar &e%arg 1% &cha sido eliminado."
+        else:
+            send "&eNo existe un lugar llamado &c%arg 1%&e."
+
+command /borrarlugares:
+    permission: admin
+    trigger:
+        delete {lugares::*}
+        delete {lugares_lista::*}
+        send "&cTodos los lugares guardados han sido eliminados."
+

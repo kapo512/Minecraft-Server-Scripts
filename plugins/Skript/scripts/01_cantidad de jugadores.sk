@@ -1,0 +1,34 @@
+
+
+function chequeoJugadores():
+  if size of all players < 2:
+    send "&e⚠ Estás solo en el servidor. Tienes &e%{TIEMPO_ESPERA_JUGADOR_NUEVO_SEGUNDOS}% segundos &epara que alguien más entre, o serás expulsado." to all players
+    set {_tiempo} to "%{TIEMPO_ESPERA_JUGADOR_NUEVO_SEGUNDOS}% seconds" parsed as timespan
+    wait {_tiempo} # 30 segundos (20 ticks = 1 segundo)
+    if size of all players < 2:
+      loop all players:
+        send "Serás expulsado en..." to loop-player
+        wait 20 ticks
+        send "&c5" to loop-player
+        wait 20 ticks
+        send "&c4" to loop-player
+        wait 20 ticks
+        send "&c3" to loop-player
+        wait 20 ticks
+        send "&c2" to loop-player
+        wait 20 ticks
+        send "&c1" to loop-player
+        wait 20 ticks
+      if size of all players < 2:
+        loop all players:
+          kick loop-player due to "⛔ Se requieren al menos 2 jugadores conectados para jugar."
+#
+#   
+on join:
+  if {TIEMPO_ESPERA_JUGADOR_NUEVO_SEGUNDOS} is not 0:
+    chequeoJugadores()
+#
+on quit:
+  if {TIEMPO_ESPERA_JUGADOR_NUEVO_SEGUNDOS} is not 0:
+    wait 1 ticks
+    chequeoJugadores()

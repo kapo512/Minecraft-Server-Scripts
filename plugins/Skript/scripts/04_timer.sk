@@ -1,0 +1,42 @@
+# El intervalo de actualización está mandrileado
+
+on Skript start:
+    # Aseguramos que el contador del jugador esté inicializado
+    if {tiempo::%uuid of player%} is not set:
+        set {tiempo::%uuid of player%} to 0
+
+on login:
+    set {_uuid} to uuid of player
+    if {tiempo::%{_uuid}%} >= {TIEMPO_JUEGO_SEMANAL_MINUTOS}:
+        kick player due to "⛔ Has agotado tu tiempo de juego hoy."
+
+# Cada intervalo, sumamos tiempo y controlamos límite
+every 60 seconds:
+    loop all players:
+        set {_uuid} to uuid of loop-player
+        add 1 to {tiempo::%{_uuid}%}
+
+        # Calcular minutos restantes
+        set {_restante} to {TIEMPO_JUEGO_SEMANAL_MINUTOS} - {tiempo::%{_uuid}%}
+
+        # Enviar aviso si faltan menos de X minutos y aún no fue avisado
+        if {_restante} <= {AVISO_TIEMPO_SEMANAL_RESTANTE}:
+            if {avisado::%{_uuid}%} is not set:
+                send "&e⚠️ Te quedan %{_restante}% minutos de juego por esta semana (Reseteo Lunes a las 00:00 hs)." to loop-player
+                set {avisado::%{_uuid}%} to true
+
+        # Kick si pasa el límite
+        if {tiempo::%{_uuid}%} >= {TIEMPO_JUEGO_SEMANAL_MINUTOS}:
+            send "Serás expulsado en..." to loop-player
+            wait 20 ticks
+            send "&c5" to loop-player
+            wait 20 ticks
+            send "&c4" to loop-player
+            wait 20 ticks
+            send "&c3" to loop-player
+            wait 20 ticks
+            send "&c2" to loop-player
+            wait 20 ticks
+            send "&c1" to loop-player
+            wait 20 ticks
+            kick loop-player due to "Alcanzaste tu límite de 6 horas de juego por esta semana (Reseteo lunes a las 00:00 hs)."

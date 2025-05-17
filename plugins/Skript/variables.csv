@@ -1,0 +1,11 @@
+# === Skript's variable storage ===
+# Please do not modify this file manually!
+#
+# version: 2.11.1
+
+aviso_tiempo_semanal_restante, long, 0000000000000005
+tiempo::<none>, long, 0000000000000000
+tiempo::c5837432-680b-39cb-ade0-9b01977671f3, long, 0000000000000016
+tiempo_espera_jugador_nuevo_segundos, long, 0000000000000000
+tiempo_juego_semanal_minutos, long, 0000000000000168
+
