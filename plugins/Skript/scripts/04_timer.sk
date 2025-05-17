@@ -40,6 +40,3 @@ every 60 seconds:
             send "&c1" to loop-player
             wait 20 ticks
             kick loop-player due to "Alcanzaste tu límite de 6 horas de juego por esta semana (Reseteo lunes a las 00:00 hs)."
-
-
-#aasasaasa
